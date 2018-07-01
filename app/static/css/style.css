@@ -1,0 +1,16 @@
+/*.gameBoard {
+	background-size: 100%;
+	display: table;
+	height: 100vh;
+	position: relative;
+	width: 100vh;
+}*/
+
+#canvas-container {
+    width: 100%;
+    text-align: center;
+}
+
+#myCanvas {
+    display: inline;
+}

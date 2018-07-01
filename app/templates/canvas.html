@@ -1,0 +1,78 @@
+{% extends "index.html" %}
+{% block title %}{% endblock %}
+
+
+{% block canvas %}
+<div id="canvas-container">
+    <canvas id="myCanvas" width="600" height="600"></canvas>
+    <br>
+    <div id="msgBox"></div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<script src="/static/js/functions.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" defer="true">
+$(document).ready(function() {
+    canvasOffset = $("#myCanvas").offset();
+    ctx = document.getElementById("myCanvas").getContext("2d");
+
+    var board = {
+        fields: [
+            {col: 1, row: 0, img_src: '/static/images/png/CATAN-AKKER_t_rot.png'},
+            {col: 2, row: 0, img_src: '/static/images/png/CATAN-BERGEN_t_rot.png'},
+            {col: 3, row: 0, img_src: '/static/images/png/CATAN-BOS_t_rot.png'},
+            {col: 0, row: 1, img_src: '/static/images/png/CATAN-HEUVEL_t_rot.png'},
+            {col: 1, row: 1, img_src: '/static/images/png/CATAN-WEIDE_t_rot.png'},
+            {col: 2, row: 1, img_src: '/static/images/png/CATAN-AKKER_t_rot.png'},
+            {col: 3, row: 1, img_src: '/static/images/png/CATAN-WEIDE_t_rot.png'},
+            {col: 0, row: 2, img_src: '/static/images/png/CATAN-BOS_t_rot.png'},
+            {col: 1, row: 2, img_src: '/static/images/png/CATAN-HEUVEL_t_rot.png'},
+            {col: 2, row: 2, img_src: '/static/images/png/CATAN-HAVEN_t_rot.png'},
+            {col: 3, row: 2, img_src: '/static/images/png/CATAN-AKKER_t_rot.png'},
+            {col: 4, row: 2, img_src: '/static/images/png/CATAN-WEIDE_t_rot.png'},
+            {col: 0, row: 3, img_src: '/static/images/png/CATAN-BOS_t_rot.png'},
+            {col: 1, row: 3, img_src: '/static/images/png/CATAN-HEUVEL_t_rot.png'},
+            {col: 2, row: 3, img_src: '/static/images/png/CATAN-BERGEN_t_rot.png'},
+            {col: 3, row: 3, img_src: '/static/images/png/CATAN-AKKER_t_rot.png'},
+            {col: 1, row: 4, img_src: '/static/images/png/CATAN-BOS_t_rot.png'},
+            {col: 2, row: 4, img_src: '/static/images/png/CATAN-WEIDE_t_rot.png'},
+            {col: 3, row: 4, img_src: '/static/images/png/CATAN-BERGEN_t_rot.png'}
+        ]
+    }
+    var radius = 40, xOffset = 100, yOffset = 100;
+    initVertices(board, radius, xOffset, yOffset);
+    drawBoard(board);
+
+    $("#myCanvas").css("border", "1px rgb(0, 0, 0) solid");
+    $("#myCanvas").mousemove(function(event) {
+        var mouseX = event.pageX - canvasOffset.left, mouseY = event.pageY - canvasOffset.top;
+        var output = "";
+        for(var i = 0; i < board.fields.length; i++) {
+            if(pointIsInField({x: mouseX, y: mouseY}, board.fields[i])) {
+                output += i + " ";
+            }
+        }
+        if(output === "") {
+            output = "none";
+        }
+        $("#msgBox").text(output);
+    });
+
+    $("#myCanvas").mouseleave(function() {
+        $("#msgBox").text("");
+    });
+
+    $(window).scroll(function() {
+        canvasOffset = $("#myCanvas").offset();
+    });
+    $(window).resize(function() {
+        canvasOffset = $("#myCanvas").offset();
+    });
+});
+
+
+</script>
+{% endblock %}

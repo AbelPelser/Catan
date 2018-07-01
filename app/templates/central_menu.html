@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<body>
+	{%- with messages = get_flashed_messages(with_categories=True) -%}
+	{%- if messages -%}
+	<div align="center">
+	    {% for category, message in messages -%}
+	    {%- if category == 'warning' -%}
+	    {%- set class='warning' -%}
+	    {%- elif category == 'error' -%}
+	    {%- set class='danger' -%}
+	    {%- else -%}
+	    {%- set class='info' -%}
+	    {%- endif -%}
+	    <div class="alert alert-{{ class }}" style="margin: 0;">{{ message }}</div>
+	    {% endfor -%}
+	</div>
+	{%- endif -%}
+	{%- endwith -%}
+</body>
+{% endblock %}
+{% block javascript %}
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<script type="text/javascript" defer="true">
+//$(document).ready(function() {
+	//$("#menu_list").width($(".user_menu_input").first().width() * 1.5);
+//});
+</script>
+{% endblock %}

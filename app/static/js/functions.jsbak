@@ -16,79 +16,152 @@ function initVertices(board, radius, xOffset, yOffset) {
 
     for(var i = 0; i < board.fields.length; i++) {
         field = board.fields[i];
-        
+
         centralX = xOffset + field.col * 2 * tHeight;
         if(field.row % 2 == 1) {
             centralX += tHeight;
         }
         centralY = yOffset + field.row * radius * 1.5;
 
-        vertices = [{x: centralX - tHeight, y: centralY - 0.5 * radius},
+        vertices = [{x: centralX, y: centralY + radius},
+                    {x: centralX - tHeight, y: centralY + 0.5 * radius},
+                    {x: centralX - tHeight, y: centralY - 0.5 * radius},
                     {x: centralX, y: centralY - radius},
                     {x: centralX + tHeight, y: centralY - 0.5 * radius},
-                    {x: centralX + tHeight, y: centralY + 0.5 * radius},
-                    {x: centralX, y: centralY + radius},
-                    {x: centralX - tHeight, y: centralY + 0.5 * radius}];
+                    {x: centralX + tHeight, y: centralY + 0.5 * radius}];
         board.fields[i].vertices = vertices;
     }
 }
 
 function drawBoard(board) {
-    for(var i = 0; i < board.fields.length; i++) {
-        drawField(board.fields[i].vertices, board.fields[i].img_src);
-    }
-    fillWithImages(board);
+    var field;
+
+    drawFieldBorders(board);
+    loadImages(board, 0);
 }
 
-function drawField(vertices, img_src) {
-    var ctx = document.getElementById("myCanvas").getContext("2d");
+function drawFieldBorders(board) {
+    var field;
 
-    // ctx.fillStyle = "#000000";
-    ctx.strokeStyle = "#000000";
-    ctx.lineWidth = 1;
+    for(var i = 0; i < board.fields.length; i++) {
+        field = board.fields[i];
+        drawFieldBorder(field.vertices, field.bordercolor);
+    }
+}
 
+function drawFieldBorder(vertices, bordercolor) {
+    // Draw a line around the hexagon
     ctx.beginPath();
     ctx.moveTo(vertices[0].x, vertices[0].y);
     for(var i = 1; i < vertices.length; i++) {
         ctx.lineTo(vertices[i].x, vertices[i].y);
     }
     ctx.closePath();
+
+    ctx.strokeStyle = "#f6edc4";
+    ctx.lineWidth = 3;
     ctx.stroke();
-    // ctx.fill();
+    // ctx.strokeStyle = "#000000";
+    // ctx.lineWidth = 1;
+    ctx.stroke();
 }
 
-function fillWithImages(board) {
-    console.log("Bleh");
-    var ctx = document.getElementById("myCanvas").getContext("2d");
-    var img = new Image();
-    
-    img.onload = function() {
-        var minX = 9999, minY = 9999, maxX = 0, maxY = 0;
-        var vertices;
 
-        console.log("Blah");
-        for(var i = 0; i < board.fields.length; i++) {
-            minX = minY = 9999;
-            maxX = maxY = 0;
-            vertices = board.fields[i].vertices;
+// stretchPixels = the number of extra pixels to be clipped on each side of the images
+function loadImages(board, stretchPixels) {
+    var imgSources = [];
+    var img_src, imgObj;
 
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(vertices[0].x, vertices[0].y);
-            for(var j = 1; j < vertices.length; j++) {
-                ctx.lineTo(vertices[j].x, vertices[j].y);
-                minX = Math.min(minX, vertices[j].x);
-                minY = Math.min(minY, vertices[j].y);
-                maxX = Math.max(maxX, vertices[j].x);
-                maxY = Math.max(maxY, vertices[j].y);
-            }
-            ctx.clip();
-            console.log(minX + ", " + minY + ", " + (maxX - minX) + ", " + (maxY - minY));
-            ctx.drawImage(img, minX, minY, maxX - minX, maxY - minY);
-            ctx.restore();
+    // Collect the various images to be loaded
+    for(var i = 0; i < board.fields.length; i++) {
+        img_src = board.fields[i].img_src;
+        if(imgSources.indexOf(img_src) == -1) {
+            imgSources.push(img_src);
         }
     }
-    img.src = board.fields[0].img_src;
+
+    // For each image, draw it in every field that requires it
+    for(var i = 0; i < imgSources.length; i++) {
+        imgObj = new Image();
+        imgObj.src = imgSources[i];
+        imgObj.onload = function() {
+            var minX, minY, maxX, maxY;
+            var vertices;
+
+            // Iterate over all fields, check which image they need
+            for(var j = 0; j < board.fields.length; j++) {
+                // this.src is absolute, field.img_src is relative, hence this split is needed
+                if(board.fields[j].img_src.split("static")[1] == this.src.split("static")[1]) {
+                    minX = minY = 9999;
+                    maxX = maxY = 0;
+                    vertices = board.fields[j].vertices;
+                    // Redefine this field's path, collect the offsets and sizes needed to draw and scale the image
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.moveTo(vertices[0].x, vertices[0].y);
+                    for(var k = 1; k < vertices.length; k++) {
+                        ctx.lineTo(vertices[k].x, vertices[k].y);
+                        minX = Math.min(minX, vertices[k].x);
+                        minY = Math.min(minY, vertices[k].y);
+                        maxX = Math.max(maxX, vertices[k].x);
+                        maxY = Math.max(maxY, vertices[k].y);
+                    }
+                    // Make sure we don't draw past this field's border
+                    ctx.clip();
+                    ctx.drawImage(this, minX - stretchPixels, minY - stretchPixels, maxX - minX + 2 * stretchPixels, maxY - minY + 2 * stretchPixels);
+                    // 'unclip' to the saved state
+                    ctx.restore();
+                }
+            }
+            drawFieldBorders(board);
+        }
+    }
+}
+
+
+function drawRoads(board) {
+    var field, pointA, pointB, road;
+
+    for(var i = 0; i < board.roads.length; i++) {
+        // For each road, find out which field it belongs to
+        road = board.roads[i];
+        field = undefined;
+        for(var j = 0; j < board.fields.length; j++) {
+            if(board.fields[j].id == road.fieldId) {
+                field = board.fields[j];
+                break;
+            }
+        }
+        if(field == undefined) {
+            console.log("Invalid fieldId found for road: " + board.roads[i].fieldId);
+            continue;
+        }
+        // Find the two points that are connected by this road's edge
+        pointA = {x: field.vertices[road.side].x, y: field.vertices[road.side].y};
+        pointB = {x: field.vertices[(road.side + 1) % 6].x, y: field.vertices[(road.side + 1) % 6].y};
+        drawRoad(pointA, pointB, road.player);
+    }
+}
+
+function drawRoad(pointA, pointB, playerColor) {
+    var angle = 0;
+    var location = {x: (pointA.x + pointB.x) / 2, y: (pointA.y + pointB.y) / 2};
+    var width = Math.sqrt(Math.pow(Math.abs(pointB.x - pointA.x), 2) + Math.pow(Math.abs(pointB.y - pointA.y), 2));
+    // 1: Extract the two points the road 'connects'
+    // 2: Formula for determining the angle
+    // 3: Draw at correct position
+
+    if(pointA.x == pointB.x) {
+        angle = Math.PI / 2;
+    } else {
+        angle = Math.atan((pointB.y - pointA.y) / (pointB.x - pointA.x));
+    }
+    console.log("Rotating " + angle * 180 / Math.PI + " degrees");
+    ctx.save();
+    ctx.rotate(angle);
+    ctx.fillStyle = playerColor;
+    ctx.fillRect(location.x - width / 2, location.y - width / 20, width, width / 10);
+    ctx.restore();
 }
 
 /* Performs ray-casting from the point to the right

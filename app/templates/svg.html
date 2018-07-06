@@ -1,0 +1,119 @@
+{% extends "index.html" %}
+{% block title %}SVGtest{% endblock %}
+
+
+{% block canvas %}
+<div id="svg-container">
+    <svg id="boardSvg">
+        
+    </svg>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="/static/js/functions.js"></script>
+<script src="/static/js/boardSvgDrawFunctions.js"></script>
+<script src="/static/js/jquery.svg.package-1.5.0/jquery.svg.js"></script>
+<script src="/static/js/jquery.svg.package-1.5.0/jquery.svganim.js"></script>
+<script type="text/javascript" defer="true">
+$(document).ready(function() {
+    board = {
+        fields: [
+            {id: 0, col: 2, row: 1, imgSrc: "/static/images/png/AKKER.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 1, col: 3, row: 1, imgSrc: "/static/images/png/BERGEN.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 2, col: 4, row: 1, imgSrc: "/static/images/png/BOS.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 3, col: 2, row: 2, imgSrc: "/static/images/png/HEUVEL.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 4, col: 3, row: 2, imgSrc: "/static/images/png/WEIDE.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 5, col: 4, row: 2, imgSrc: "/static/images/png/AKKER.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 6, col: 5, row: 2, imgSrc: "/static/images/png/WEIDE.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 7, col: 1, row: 3, imgSrc: "/static/images/png/BOS.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 8, col: 2, row: 3, imgSrc: "/static/images/png/HEUVEL.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 9, col: 3, row: 3, imgSrc: "/static/images/png/HAVEN.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 10, col: 4, row: 3, imgSrc: "/static/images/png/AKKER.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 11, col: 5, row: 3, imgSrc: "/static/images/png/WEIDE.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 12, col: 2, row: 4, imgSrc: "/static/images/png/BOS.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 13, col: 3, row: 4, imgSrc: "/static/images/png/HEUVEL.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 14, col: 4, row: 4, imgSrc: "/static/images/png/BERGEN.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 15, col: 5, row: 4, imgSrc: "/static/images/png/AKKER.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 16, col: 2, row: 5, imgSrc: "/static/images/png/BOS.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 17, col: 3, row: 5, imgSrc: "/static/images/png/WEIDE.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 18, col: 4, row: 5, imgSrc: "/static/images/png/BERGEN.png", imgRot: 0, bordercolor: "#f4deb5"},
+
+            {id: 19, col: 2, row: 0, imgSrc: "/static/images/png/WATER.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 20, col: 3, row: 0, imgSrc: "/static/images/png/WATER.png", imgRot: 60, bordercolor: "#f4deb5"},
+            {id: 21, col: 4, row: 0, imgSrc: "/static/images/png/WATER.png", imgRot: 60, bordercolor: "#f4deb5"},
+            {id: 22, col: 5, row: 0, imgSrc: "/static/images/png/WATER.png", imgRot: 60, bordercolor: "#f4deb5"},
+            {id: 23, col: 1, row: 1, imgSrc: "/static/images/png/WATER.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 24, col: 5, row: 1, imgSrc: "/static/images/png/WATER.png", imgRot: 120, bordercolor: "#f4deb5"},
+            {id: 25, col: 1, row: 2, imgSrc: "/static/images/png/WATER.png", imgRot: 0, bordercolor: "#f4deb5"},
+            {id: 26, col: 6, row: 2, imgSrc: "/static/images/png/WATER.png", imgRot: 120, bordercolor: "#f4deb5"},
+            {id: 27, col: 0, row: 3, imgSrc: "/static/images/png/WATER.png", imgRot: -60, bordercolor: "#f4deb5"},
+            {id: 28, col: 6, row: 3, imgSrc: "/static/images/png/WATER.png", imgRot: 120, bordercolor: "#f4deb5"},
+            {id: 29, col: 1, row: 4, imgSrc: "/static/images/png/WATER.png", imgRot: -60, bordercolor: "#f4deb5"},
+            {id: 30, col: 6, row: 4, imgSrc: "/static/images/png/WATER.png", imgRot: 180, bordercolor: "#f4deb5"},
+            {id: 31, col: 1, row: 5, imgSrc: "/static/images/png/WATER.png", imgRot: -60, bordercolor: "#f4deb5"},
+            {id: 32, col: 5, row: 5, imgSrc: "/static/images/png/WATER.png", imgRot: 180, bordercolor: "#f4deb5"},
+            {id: 33, col: 2, row: 6, imgSrc: "/static/images/png/WATER.png", imgRot: -120, bordercolor: "#f4deb5"},
+            {id: 34, col: 3, row: 6, imgSrc: "/static/images/png/WATER.png", imgRot: -120, bordercolor: "#f4deb5"},
+            {id: 35, col: 4, row: 6, imgSrc: "/static/images/png/WATER.png", imgRot: -120, bordercolor: "#f4deb5"},
+            {id: 36, col: 5, row: 6, imgSrc: "/static/images/png/WATER.png", imgRot: 180, bordercolor: "#f4deb5"},
+        ],
+        roads: [
+            {player: "blue", fieldId: 10, side: 0},
+            {player: "blue", fieldId: 10, side: 4},
+            {player: "blue", fieldId: 10, side: 5},
+            {player: "red", fieldId: 15, side: 0},
+            {player: "red", fieldId: 15, side: 1},
+            {player: "red", fieldId: 15, side: 2},
+            {player: "white", fieldId: 12, side: 0},
+            {player: "white", fieldId: 12, side: 1},
+            {player: "orange", fieldId: 18, side: 1},
+            {player: "orange", fieldId: 18, side: 2}
+        ],
+        settlements: [
+            {player: "blue", fieldId: 10, vertex: 0},
+            {player: "red", fieldId: 15, vertex: 2},
+            {player: "white", fieldId: 12, vertex: 0},
+            {player: "orange", fieldId: 18, vertex: 1}
+        ],
+        cities: [
+            {player: "blue", fieldId: 10, vertex: 4},
+            {player: "red", fieldId: 15, vertex: 0},
+            {player: "white", fieldId: 12, vertex: 2},
+            {player: "orange", fieldId: 18, vertex: 3}
+        ]
+    };
+    roadClickboxes = [
+        {fieldId: 10, side: 1},
+        {fieldId: 18, side: 3}
+    ];
+    crossingClickboxes = [
+        {fieldId: 2, vertex: 2},
+        {fieldId: 2, vertex: 4},
+        {fieldId: 17, vertex: 0},
+        {fieldId: 8, vertex: 2},
+        {fieldId: 3, vertex: 0},
+        {fieldId: 3, vertex: 2}
+    ]
+
+    var radius = 60, xOffset = 10, yOffset = 60;
+    initBoard(radius, xOffset, yOffset);
+
+    $("#boardSvg").svg({onLoad: svgInit});
+
+    function svgInit() {
+        var svg = $("#boardSvg").svg("get");
+        drawBoard(svg);
+        drawRoadClickboxes(svg, roadClickboxes);
+        drawCrossingClickboxes(svg, crossingClickboxes);
+        // Animate the clickboxes
+        $(".clickbox").animate({svgStrokeDashOffset: board.cbAnimProgress}, 1000, 'linear', animateRoadCBLoop);
+    }
+    // $("#boardSvg").resize();
+});
+
+
+</script>
+{% endblock %}

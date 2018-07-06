@@ -6,11 +6,45 @@
 	width: 100vh;
 }*/
 
-#canvas-container {
-    width: 100%;
-    text-align: center;
+
+/* svg.html */
+
+#boardSvg {
+    width: 100vh;
+    height: 100vh;
+
 }
 
-#myCanvas {
+#svg-container {
+    
+}
+
+
+/* canvas.html */
+
+#canvas-container {
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+    width: 60vh;
+}
+
+.canvas {
+    border: 1px rgb(0, 0, 0) solid;
     display: inline;
+    left: 0;
+    position: absolute;
+    top: 0;
+}
+
+#boardCanvas {
+    z-index: 2;
+}
+
+#clickboxCanvas {
+    z-index: 1;
+}
+
+#msgBox {
+    clear: both;
 }

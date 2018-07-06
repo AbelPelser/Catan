@@ -1,11 +1,12 @@
 {% extends "index.html" %}
-{% block title %}{% endblock %}
+{% block title %}Canvastest{% endblock %}
 
 
 {% block canvas %}
 <div id="canvas-container">
-    <canvas id="myCanvas" width="600" height="600"></canvas>
-    <br>
+    <canvas id="clickboxCanvas" width="800" height="800" class="canvas"></canvas>
+    <canvas id="boardCanvas" width="800" height="800" class="canvas"></canvas>
+    <!-- <br> -->
     <div id="msgBox"></div>
 </div>
 {% endblock %}
@@ -13,45 +14,99 @@
 {% block javascript %}
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
 <script src="/static/js/functions.js"></script>
+<script src="/static/js/boardDrawFunctions.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script type="text/javascript" defer="true">
 $(document).ready(function() {
-    canvasOffset = $("#myCanvas").offset();
-    ctx = document.getElementById("myCanvas").getContext("2d");
+    // Global variables
+    boardCanvas = document.getElementById("boardCanvas");
+    boardCtx = boardCanvas.getContext("2d");
+    cbCanvas = document.getElementById("clickboxCanvas");
+    cbCtx = cbCanvas.getContext("2d");
 
     var board = {
         fields: [
-            {col: 1, row: 0, img_src: '/static/images/png/CATAN-AKKER_t_rot.png'},
-            {col: 2, row: 0, img_src: '/static/images/png/CATAN-BERGEN_t_rot.png'},
-            {col: 3, row: 0, img_src: '/static/images/png/CATAN-BOS_t_rot.png'},
-            {col: 0, row: 1, img_src: '/static/images/png/CATAN-HEUVEL_t_rot.png'},
-            {col: 1, row: 1, img_src: '/static/images/png/CATAN-WEIDE_t_rot.png'},
-            {col: 2, row: 1, img_src: '/static/images/png/CATAN-AKKER_t_rot.png'},
-            {col: 3, row: 1, img_src: '/static/images/png/CATAN-WEIDE_t_rot.png'},
-            {col: 0, row: 2, img_src: '/static/images/png/CATAN-BOS_t_rot.png'},
-            {col: 1, row: 2, img_src: '/static/images/png/CATAN-HEUVEL_t_rot.png'},
-            {col: 2, row: 2, img_src: '/static/images/png/CATAN-HAVEN_t_rot.png'},
-            {col: 3, row: 2, img_src: '/static/images/png/CATAN-AKKER_t_rot.png'},
-            {col: 4, row: 2, img_src: '/static/images/png/CATAN-WEIDE_t_rot.png'},
-            {col: 0, row: 3, img_src: '/static/images/png/CATAN-BOS_t_rot.png'},
-            {col: 1, row: 3, img_src: '/static/images/png/CATAN-HEUVEL_t_rot.png'},
-            {col: 2, row: 3, img_src: '/static/images/png/CATAN-BERGEN_t_rot.png'},
-            {col: 3, row: 3, img_src: '/static/images/png/CATAN-AKKER_t_rot.png'},
-            {col: 1, row: 4, img_src: '/static/images/png/CATAN-BOS_t_rot.png'},
-            {col: 2, row: 4, img_src: '/static/images/png/CATAN-WEIDE_t_rot.png'},
-            {col: 3, row: 4, img_src: '/static/images/png/CATAN-BERGEN_t_rot.png'}
+            {id: 0, col: 2, row: 1, imgSrc: "/static/images/png/AKKER.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 1, col: 3, row: 1, imgSrc: "/static/images/png/BERGEN.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 2, col: 4, row: 1, imgSrc: "/static/images/png/BOS.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 3, col: 2, row: 2, imgSrc: "/static/images/png/HEUVEL.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 4, col: 3, row: 2, imgSrc: "/static/images/png/WEIDE.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 5, col: 4, row: 2, imgSrc: "/static/images/png/AKKER.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 6, col: 5, row: 2, imgSrc: "/static/images/png/WEIDE.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 7, col: 1, row: 3, imgSrc: "/static/images/png/BOS.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 8, col: 2, row: 3, imgSrc: "/static/images/png/HEUVEL.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 9, col: 3, row: 3, imgSrc: "/static/images/png/HAVEN.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 10, col: 4, row: 3, imgSrc: "/static/images/png/AKKER.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 11, col: 5, row: 3, imgSrc: "/static/images/png/WEIDE.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 12, col: 2, row: 4, imgSrc: "/static/images/png/BOS.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 13, col: 3, row: 4, imgSrc: "/static/images/png/HEUVEL.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 14, col: 4, row: 4, imgSrc: "/static/images/png/BERGEN.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 15, col: 5, row: 4, imgSrc: "/static/images/png/AKKER.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 16, col: 2, row: 5, imgSrc: "/static/images/png/BOS.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 17, col: 3, row: 5, imgSrc: "/static/images/png/WEIDE.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 18, col: 4, row: 5, imgSrc: "/static/images/png/BERGEN.png", img_rot: 0, bordercolor: "#f4deb5"},
+
+            {id: 19, col: 2, row: 0, imgSrc: "/static/images/png/WATER.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 20, col: 3, row: 0, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI / 3, bordercolor: "#f4deb5"},
+            {id: 21, col: 4, row: 0, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI / 3, bordercolor: "#f4deb5"},
+            {id: 22, col: 5, row: 0, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI / 3, bordercolor: "#f4deb5"},
+            {id: 23, col: 1, row: 1, imgSrc: "/static/images/png/WATER.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 24, col: 5, row: 1, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI / 1.5, bordercolor: "#f4deb5"},
+            {id: 25, col: 1, row: 2, imgSrc: "/static/images/png/WATER.png", img_rot: 0, bordercolor: "#f4deb5"},
+            {id: 26, col: 6, row: 2, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI / 1.5, bordercolor: "#f4deb5"},
+            {id: 27, col: 0, row: 3, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI / -3, bordercolor: "#f4deb5"},
+            {id: 28, col: 6, row: 3, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI / 1.5, bordercolor: "#f4deb5"},
+            {id: 29, col: 1, row: 4, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI / -3, bordercolor: "#f4deb5"},
+            {id: 30, col: 6, row: 4, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI, bordercolor: "#f4deb5"},
+            {id: 31, col: 1, row: 5, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI / -3, bordercolor: "#f4deb5"},
+            {id: 32, col: 5, row: 5, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI, bordercolor: "#f4deb5"},
+            {id: 33, col: 2, row: 6, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI / -1.5, bordercolor: "#f4deb5"},
+            {id: 34, col: 3, row: 6, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI / -1.5, bordercolor: "#f4deb5"},
+            {id: 35, col: 4, row: 6, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI / -1.5, bordercolor: "#f4deb5"},
+            {id: 36, col: 5, row: 6, imgSrc: "/static/images/png/WATER.png", img_rot: Math.PI, bordercolor: "#f4deb5"},
+        ],
+        roads: [
+            {player: "blue", fieldId: 10, side: 0},
+            {player: "blue", fieldId: 10, side: 4},
+            {player: "blue", fieldId: 10, side: 5},
+            {player: "red", fieldId: 15, side: 0},
+            {player: "red", fieldId: 15, side: 1},
+            {player: "red", fieldId: 15, side: 2},
+            {player: "white", fieldId: 12, side: 0},
+            {player: "white", fieldId: 12, side: 1},
+            {player: "orange", fieldId: 18, side: 1},
+            {player: "orange", fieldId: 18, side: 2}
+        ],
+        settlements: [
+            {player: "blue", fieldId: 10, vertex: 0, imgSrc: "/static/images/png/settlement_blue.png"},
+            {player: "red", fieldId: 15, vertex: 2, imgSrc: "/static/images/png/settlement_red.png"},
+            {player: "white", fieldId: 12, vertex: 0, imgSrc: "/static/images/png/settlement_white.png"},
+            {player: "orange", fieldId: 18, vertex: 1, imgSrc: "/static/images/png/settlement_orange.png"}
+        ],
+        cities: [
+            {player: "blue", fieldId: 10, vertex: 4, imgSrc: "/static/images/png/settlement_blue.png"},
+            {player: "red", fieldId: 15, vertex: 0, imgSrc: "/static/images/png/settlement_red.png"},
+            {player: "white", fieldId: 12, vertex: 2, imgSrc: "/static/images/png/settlement_white.png"},
+            {player: "orange", fieldId: 18, vertex: 3, imgSrc: "/static/images/png/settlement_orange.png"}
         ]
-    }
-    var radius = 40, xOffset = 100, yOffset = 100;
-    initVertices(board, radius, xOffset, yOffset);
+    };
+
+    var radius = 60, xOffset = 10, yOffset = 75;
+    initDimensions(board, radius, xOffset, yOffset);
     drawBoard(board);
 
-    $("#myCanvas").css("border", "1px rgb(0, 0, 0) solid");
-    $("#myCanvas").mousemove(function(event) {
-        var mouseX = event.pageX - canvasOffset.left, mouseY = event.pageY - canvasOffset.top;
+    roadClickboxes = [
+        {fieldId: 10, side: 1, color: "rgba(255, 255, 255, 0.5)"},
+        {fieldId: 18, side: 3, color: "rgba(255, 100, 100, 0.5)"}
+    ];
+    drawClickboxes(board, roadClickboxes, undefined);
+
+    $("#boardCanvas").mousemove(function(evt) {
+        var rect = boardCanvas.getBoundingClientRect();
+        var mouseX = evt.clientX - rect.left, mouseY = evt.clientY - rect.top;
         var output = "";
         for(var i = 0; i < board.fields.length; i++) {
-            if(pointIsInField({x: mouseX, y: mouseY}, board.fields[i])) {
+            if(pointIsInPolygon({x: mouseX, y: mouseY}, board.fields[i].vertices)) {
                 output += i + " ";
             }
         }
@@ -61,15 +116,8 @@ $(document).ready(function() {
         $("#msgBox").text(output);
     });
 
-    $("#myCanvas").mouseleave(function() {
+    $("#boardCanvas").mouseleave(function() {
         $("#msgBox").text("");
-    });
-
-    $(window).scroll(function() {
-        canvasOffset = $("#myCanvas").offset();
-    });
-    $(window).resize(function() {
-        canvasOffset = $("#myCanvas").offset();
     });
 });
 

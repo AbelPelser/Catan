@@ -13,3 +13,7 @@ def index():
 @main.route('/canvas/')
 def canvas():
     return render_template('canvas.html')
+
+@main.route('/svg/')
+def svg():
+    return render_template('svg.html')

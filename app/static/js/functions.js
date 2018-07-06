@@ -10,116 +10,158 @@ function htmlUnescape(toClean) {
 	return escapeElement.textContent;
 }
 
-function initVertices(board, radius, xOffset, yOffset) {
+function highlightCb(evt) {
+    console.log("highlightCb called for " + evt.target.id);
+    var cb = evt.target;
+
+    cb.setAttribute("x", cb.widthHl / -2);
+    cb.setAttribute("width", cb.widthHl);
+    cb.setAttribute("y", cb.heightHl / -2);
+    cb.setAttribute("height", cb.heightHl);
+}
+
+function removeCbHighlight(evt) {
+    console.log("removeCbHighlight called for " + evt.target.id);
+    var cb = evt.target;
+
+    cb.setAttribute("x", cb.widthDefault / -2);
+    cb.setAttribute("width", cb.widthDefault);
+    cb.setAttribute("y", cb.heightDefault / -2);
+    cb.setAttribute("height", cb.heightDefault);
+}
+
+function initDimensionsOld(board, radius, xOffset, yOffset) {
     var tHeight = Math.sqrt(Math.pow(radius, 2) - Math.pow(radius*0.5, 2));
 
 
     for(var i = 0; i < board.fields.length; i++) {
         field = board.fields[i];
-        
+
         centralX = xOffset + field.col * 2 * tHeight;
         if(field.row % 2 == 1) {
             centralX += tHeight;
         }
         centralY = yOffset + field.row * radius * 1.5;
 
-        vertices = [{x: centralX - tHeight, y: centralY - 0.5 * radius},
-                    {x: centralX, y: centralY - radius},
+        vertices = [{x: centralX, y: centralY - radius},
                     {x: centralX + tHeight, y: centralY - 0.5 * radius},
                     {x: centralX + tHeight, y: centralY + 0.5 * radius},
                     {x: centralX, y: centralY + radius},
-                    {x: centralX - tHeight, y: centralY + 0.5 * radius}];
+                    {x: centralX - tHeight, y: centralY + 0.5 * radius},
+                    {x: centralX - tHeight, y: centralY - 0.5 * radius}];
         board.fields[i].vertices = vertices;
+        board.fields[i].center = {x: centralX, y: centralY};
     }
+    board.roadWidth = radius / 2;
+    board.roadHeight = board.roadWidth / 8;
+    board.settlementWidth = radius / 6;
+    board.cityWidth = radius / 3;
 }
 
-function drawBoard(board) {
-    var field;
+// Initializes all information needed for representing the board
+function initBoard(radius, xOffset, yOffset) {
+    var centralX, centralY, w;
+    var tHeight = Math.sqrt(Math.pow(radius, 2) - Math.pow(radius*0.5, 2));
+
 
     for(var i = 0; i < board.fields.length; i++) {
         field = board.fields[i];
-        drawField(field.vertices, field.img_src);
+
+        centralX = xOffset + field.col * 2 * tHeight;
+        if(field.row % 2 == 1) {
+            centralX += tHeight;
+        }
+        centralY = yOffset + field.row * radius * 1.5;
+
+        board.fields[i].center = [centralX, centralY];
     }
-    loadImages(board);
+
+    board.hexagonVertices = [
+        [0, -radius],
+        [tHeight, -0.5 * radius],
+        [tHeight, 0.5 * radius],
+        [0, radius],
+        [-tHeight, 0.5 * radius],
+        [-tHeight, -0.5 * radius]
+    ];
+
+    board.roadWidth = radius / 2;
+    board.roadHeight = board.roadWidth / 8;
+    board.rcbWidth = radius / 2;
+    board.rcbHeight = board.rcbWidth / 4;
+    board.rcbWidthHl = 1.2 * board.rcbWidth;
+    board.rcbHeightHl = 2.5 * board.rcbHeight;
+
+    // Temporary solution; eventually we should use neat-looking images for settlements and cities
+    w = radius / 6;
+    board.settlementVertices = [
+        [w / -2, w / 2],
+        [w / -2, w / -2],
+        [0, -w],
+        [w / 2, w / -2],
+        [w / 2, w / 2]
+    ];
+    w = radius / 3;
+    board.cityVertices = [
+        [w / -2, w / 4],
+        [w / -2, w / -4],
+        [0, w / -4],
+        [0, w / -2],
+        [w / 4, -3 * w /4],
+        [w / 2, w / -2],
+        [w / 2, w / 4]
+    ];
+    board.ccbSize = radius / 3;
+    board.ccbSizeHl = radius / 2;
+
+    board.clickboxSettings = {
+        class: "clickbox",
+        fill: "rgba(0, 0, 0, 0.0)",
+        onmousedown: "removeCbHighlight(evt)",
+        onmouseenter: "highlightCb(evt)",
+        onmouseleave: "removeCbHighlight(evt)",
+        onmouseup: "highlightCb(evt)",
+        stroke: "rgba(255, 0, 212, 0.8)",
+        strokeDashArray: radius / 10,
+        strokeWidth: 3
+    };
+
+    board.cbAnimStep = 20;
+    board.cbAnimProgress = board.cbAnimStep;
 }
 
-function drawField(vertices, img_src) {
-    // Draw a line around the hexagon
-    ctx.strokeStyle = "#000000";
-    ctx.lineWidth = 1;
+function getPolygonDimensions(vertices) {
+    var minX, minY, maxX, maxY;
 
-    ctx.beginPath();
-    ctx.moveTo(vertices[0].x, vertices[0].y);
+    // Extreme values start at the first vertex's coordinates
+    minX = vertices[0][0];
+    minY = vertices[0][1];
+    maxX = vertices[0][0];
+    maxY = vertices[0][1];
+
+    // Redefine this field's path, collect the offsets and sizes needed to draw and scale the image
     for(var i = 1; i < vertices.length; i++) {
-        ctx.lineTo(vertices[i].x, vertices[i].y);
+        minX = Math.min(minX, vertices[i][0]);
+        minY = Math.min(minY, vertices[i][1]);
+        maxX = Math.max(maxX, vertices[i][0]);
+        maxY = Math.max(maxY, vertices[i][1]);
     }
-    ctx.closePath();
-    ctx.stroke();
-}
-
-function loadImages(board) {
-    var imgSources = [];
-    var img_src, imgObj;
-
-    // Collect the various images to be loaded
-    for(var i = 0; i < board.fields.length; i++) {
-        img_src = board.fields[i].img_src;
-        if(imgSources.indexOf(img_src) == -1) {
-            imgSources.push(img_src);
-        }
-    }
-    console.log(imgSources);
-
-    // For each image, draw it in every field that requires it
-    for(var i = 0; i < imgSources.length; i++) {
-        imgObj = new Image();
-        imgObj.src = imgSources[i];
-        imgObj.onload = function() {
-            var minX, minY, maxX, maxY;
-            var vertices;
-
-            // Iterate over all fields, check which image they need
-            for(var j = 0; j < board.fields.length; j++) {
-                // this.src is absolute, field.img_src is relative, hence this split is needed
-                if(board.fields[j].img_src.split("static")[1] == this.src.split("static")[1]) {
-                    minX = minY = 9999;
-                    maxX = maxY = 0;
-                    vertices = board.fields[j].vertices;
-                    // Redefine this field's path, collect the offsets and sizes needed to draw and scale the image
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.moveTo(vertices[0].x, vertices[0].y);
-                    for(var k = 1; k < vertices.length; k++) {
-                        ctx.lineTo(vertices[k].x, vertices[k].y);
-                        minX = Math.min(minX, vertices[k].x);
-                        minY = Math.min(minY, vertices[k].y);
-                        maxX = Math.max(maxX, vertices[k].x);
-                        maxY = Math.max(maxY, vertices[k].y);
-                    }
-                    // Make sure we don't draw past this field's border
-                    ctx.clip();
-                    ctx.drawImage(this, minX, minY, maxX - minX, maxY - minY);
-                    // 'unclip' to the saved state
-                    ctx.restore();
-                }
-            }            
-        }
-    }
+    return {left: minX, top: minY, width: maxX - minX, height: maxY - minY};
 }
 
 /* Performs ray-casting from the point to the right
  * If the ray crosses an odd number of edges, the point is in
  */
-function pointIsInField(point, field) {
+function pointIsInPolygon(point, vertices) {
     var isInside = false;
-    var i = 0, j = field.vertices.length - 1;
+    var i = 0, j = vertices.length - 1;
 
     // Check all edges
-    for (i, j; i < field.vertices.length; j = i++) {
+    for(i, j; i < vertices.length; j = i++) {
         // First checks if the point is in the y-scope of this edge
         // Then checks if the point lies to the left of this edge
-        if ((field.vertices[i].y > point.y) != (field.vertices[j].y > point.y) &&
-            point.x < (field.vertices[j].x - field.vertices[i].x) * (point.y - field.vertices[i].y) / (field.vertices[j].y - field.vertices[i].y) + field.vertices[i].x ) {
+        if((vertices[i].y > point.y) != (vertices[j].y > point.y) &&
+            point.x < (vertices[j].x - vertices[i].x) * (point.y - vertices[i].y) / (vertices[j].y - vertices[i].y) + vertices[i].x ) {
             isInside = !isInside;
         }
     }

@@ -3,6 +3,11 @@ function drawBoard(svg) {
     drawRoads(svg);
     drawSettlements(svg);
     drawCities(svg);
+    drawRobber(svg);
+
+    drawRoadClickboxes(svg);
+    drawCrossingClickboxes(svg);
+    animateClickboxes();
 }
 
 // Helper functions
@@ -41,7 +46,7 @@ function drawFields(svg) {
 
 // Temporary solution; eventually we should use neat-looking images
 function drawRoads(svg) {
-    var absLoc, field, pointA, pointB, relLoc, road, rotAngle;
+    var absLoc, field, pointA, pointB, relLoc, road, rotAngle, settings;
 
     for(var i = 0; i < board.roads.length; i++) {
         // For each road, find out which field it belongs to
@@ -58,11 +63,14 @@ function drawRoads(svg) {
         rotAngle = getAngleToRotate(pointA, pointB);
         // Determine its absolute location on the board
         absLoc = [relLoc[0] + field.center[0], relLoc[1] + field.center[1]];
-        svg.rect(board.roadWidth / -2, board.roadHeight / -2, board.roadWidth, board.roadHeight,
-            {fill: road.player,
-             id: "road_" + road.player + "_F" + road.fieldId + "S" + road.side,
-             transform: "translate(" + absLoc[0] + ", " + absLoc[1] + ") rotate(" + rotAngle + ")"}
-        );
+        settings = {fill: road.player,
+                    id: "road_" + road.player + "_F" + road.fieldId + "S" + road.side,
+                    transform: "translate(" + absLoc[0] + ", " + absLoc[1] + ") rotate(" + rotAngle + ")"};
+        if(road.player == "white") {
+            settings.stroke = "black";
+            settings.strokeWidth = 1;
+        }
+        svg.rect(board.roadWidth / -2, board.roadHeight / -2, board.roadWidth, board.roadHeight, settings);
     }
 }
 
@@ -79,7 +87,7 @@ function drawCities(svg) {
 }
 
 function drawHelper(svg, vertices, entity, idPrefix) {
-    var absLoc, field, relLoc;
+    var absLoc, field, relLoc, settings;
 
     field = getFieldById(board.fields, entity.fieldId);
     if(field == undefined) {
@@ -90,11 +98,14 @@ function drawHelper(svg, vertices, entity, idPrefix) {
     relLoc = board.hexagonVertices[entity.vertex];
     // Determine its absolute location on the board
     absLoc = [relLoc[0] + field.center[0], relLoc[1] + field.center[1]];
-    svg.polygon(vertices,
-        {fill: entity.player,
-         id: idPrefix + "_" + entity.player + "_F" + entity.fieldId + "S" + entity.vertex,
-         transform: "translate(" + absLoc[0] + ", " + absLoc[1] + ")"}
-    );
+    settings = {fill: entity.player,
+                id: idPrefix + "_" + entity.player + "_F" + entity.fieldId + "S" + entity.vertex,
+                transform: "translate(" + absLoc[0] + ", " + absLoc[1] + ")"};
+    if(entity.player == "white") {
+        settings.stroke = "black";
+        settings.strokeWidth = 1;
+    }
+    svg.polygon(vertices, settings);
 }
 
 // Functions for changing a clickbox's appearance when hovering over them
@@ -117,11 +128,11 @@ function removeCbHighlight(evt) {
     cb.setAttribute("height", cb.heightDefault);
 }
 
-function drawRoadClickboxes(svg, roadClickboxes) {
+function drawRoadClickboxes(svg) {
     var absLoc, field, pointA, pointB, rect, relLoc, rcb, rotAngle, settings;
 
-    for(var i = 0; i < roadClickboxes.length; i++) {
-        rcb = roadClickboxes[i];
+    for(var i = 0; i < board.roadClickboxes.length; i++) {
+        rcb = board.roadClickboxes[i];
         field = getFieldById(board.fields, rcb.fieldId);
         if(field == undefined) {
             console.log("Invalid fieldId found for road clickbox: " + board.roads[i].fieldId);
@@ -147,11 +158,11 @@ function drawRoadClickboxes(svg, roadClickboxes) {
     }
 }
 
-function drawCrossingClickboxes(svg, crossingClickboxes) {
+function drawCrossingClickboxes(svg) {
     var absLoc, ccb, field, rect, relLoc, settings;
 
-    for(var i = 0; i < crossingClickboxes.length; i++) {
-        ccb = crossingClickboxes[i];
+    for(var i = 0; i < board.crossingClickboxes.length; i++) {
+        ccb = board.crossingClickboxes[i];
         field = getFieldById(board.fields, ccb.fieldId);
         if(field == undefined) {
             console.log("Invalid fieldId found for crossing clickbox: " + board.roads[i].fieldId);
@@ -174,6 +185,11 @@ function drawCrossingClickboxes(svg, crossingClickboxes) {
     }
 }
 
+// Start clickbox animations
+function animateClickboxes() {
+    $(".clickbox").animate({svgStrokeDashOffset: board.cbAnimProgress}, 1000, "linear", animateRoadCBLoop);
+}
+
 // Function that gets called recursively to animate the clickboxes
 function animateRoadCBLoop() {
     // The stuff below should only happen once, so make sure only the 'first' road clickbox executes it
@@ -181,4 +197,21 @@ function animateRoadCBLoop() {
         board.cbAnimProgress += board.cbAnimStep;
         $(".clickbox").animate({svgStrokeDashOffset: board.cbAnimProgress}, 1000, 'linear', animateRoadCBLoop);
     }
+}
+
+function drawRobber(svg) {
+    var field, group;
+
+    field = getFieldById(board.fields, board.robber.fieldId);
+    group = svg.group("robber", {transform: "translate(" + field.center[0] + ", " + field.center[1] + ")", fill: "black"});
+    // img = svg.image(group, board.robberWidth / -2, board.robberHeight / -2, board.robberWidth, board.robberHeight, board.robber.imgSrc);
+    // svg.title(img, "Robber");
+    svg.ellipse(group, 0, 0, board.robberWidth / 2.2, board.robberHeight * 0.375, {});
+    svg.circle(group, 0, board.robberHeight / -2.5, board.robberWidth * 0.35, {});
+    svg.polygon(group, 
+                [[board.robberWidth / -2, board.robberHeight / 2],
+                 [board.robberWidth / -2, 3 * board.robberHeight / 8],
+                 [0, (board.robberHeight / 4) - board.robberWidth / 2],
+                 [board.robberWidth / 2, 3 * board.robberHeight / 8],
+                 [board.robberWidth / 2, board.robberHeight / 2]], {});
 }

@@ -3,11 +3,12 @@
 	<head>
 		<meta charset="ansi">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/global.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/leftMenu.css">
 		<link rel="stylesheet" type="text/css" href="/static/css/jquery.svg.css">
 		<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
-		<title>{% if self.title() %}{% block title %}{% endblock %} - {% endif %}</title>
+		<title>{% if self.title() %}{% block title %}{% endblock %} - {% endif %} Catan</title>
 	</head>
 	{% block body %}
 	{% endblock %}

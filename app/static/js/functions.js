@@ -10,8 +10,9 @@ function htmlUnescape(toClean) {
 	return escapeElement.textContent;
 }
 
+// Event handlers for the clickboxes
 function highlightCb(evt) {
-    console.log("highlightCb called for " + evt.target.id);
+    // console.log("highlightCb called for " + evt.target.id);
     var cb = evt.target;
 
     cb.setAttribute("x", cb.widthHl / -2);
@@ -21,7 +22,7 @@ function highlightCb(evt) {
 }
 
 function removeCbHighlight(evt) {
-    console.log("removeCbHighlight called for " + evt.target.id);
+    // console.log("removeCbHighlight called for " + evt.target.id);
     var cb = evt.target;
 
     cb.setAttribute("x", cb.widthDefault / -2);
@@ -30,52 +31,23 @@ function removeCbHighlight(evt) {
     cb.setAttribute("height", cb.heightDefault);
 }
 
-function initDimensionsOld(board, radius, xOffset, yOffset) {
-    var tHeight = Math.sqrt(Math.pow(radius, 2) - Math.pow(radius*0.5, 2));
-
-
-    for(var i = 0; i < board.fields.length; i++) {
-        field = board.fields[i];
-
-        centralX = xOffset + field.col * 2 * tHeight;
-        if(field.row % 2 == 1) {
-            centralX += tHeight;
-        }
-        centralY = yOffset + field.row * radius * 1.5;
-
-        vertices = [{x: centralX, y: centralY - radius},
-                    {x: centralX + tHeight, y: centralY - 0.5 * radius},
-                    {x: centralX + tHeight, y: centralY + 0.5 * radius},
-                    {x: centralX, y: centralY + radius},
-                    {x: centralX - tHeight, y: centralY + 0.5 * radius},
-                    {x: centralX - tHeight, y: centralY - 0.5 * radius}];
-        board.fields[i].vertices = vertices;
-        board.fields[i].center = {x: centralX, y: centralY};
-    }
-    board.roadWidth = radius / 2;
-    board.roadHeight = board.roadWidth / 8;
-    board.settlementWidth = radius / 6;
-    board.cityWidth = radius / 3;
-}
-
 // Initializes all information needed for representing the board
 function initBoard(radius, xOffset, yOffset) {
     var centralX, centralY, w;
     var tHeight = Math.sqrt(Math.pow(radius, 2) - Math.pow(radius*0.5, 2));
 
-
+    // Init the central coordinates of every field
     for(var i = 0; i < board.fields.length; i++) {
         field = board.fields[i];
-
         centralX = xOffset + field.col * 2 * tHeight;
         if(field.row % 2 == 1) {
             centralX += tHeight;
         }
-        centralY = yOffset + field.row * radius * 1.5;
-
+        centralY = yOffset + radius + field.row * radius * 1.5;
         board.fields[i].center = [centralX, centralY];
     }
 
+    // Data used for drawing stuff
     board.hexagonVertices = [
         [0, -radius],
         [tHeight, -0.5 * radius],
@@ -128,6 +100,41 @@ function initBoard(radius, xOffset, yOffset) {
 
     board.cbAnimStep = 20;
     board.cbAnimProgress = board.cbAnimStep;
+
+    board.robberWidth = radius / 4;
+    board.robberHeight = board.robberWidth * 2;
+}
+
+function highlightCard(evt) {
+    var cardNr = evt.target.id.split("_")[0].split("d")[1];
+    var cardHeight = $("#" + evt.target.id).attr("height");
+    // console.log("highlightCard " + cardNr + " (" + cardHeight + ")");
+    $(evt.target).animate({svgTransform: "translate(0, -" + cardHeight / 3 + ")"}, 250, "linear");
+}
+
+function removeCardHl(evt) {
+    console.log("removeCardHl");
+    $(evt.target).animate({svgTransform: "translate(0, 0)"}, 250, "linear");
+}
+
+// Initialize the information needed to draw the cards
+function initCards(cards, svgWidth, svgHeight) {
+    // Formula based on trial and error for determining the angle the outer cards should make
+    cards.spreadAngle = cards.cards.length == 0 ? 0 : 1 / (0.03 * -cards.cards.length) + 55;
+    cards.spreadRadius = 0.5 * svgHeight; // ?
+    cards.height = svgHeight / 2;
+    cards.width = cards.height / 1.75;
+    cards.rectSettings = {
+        class: "card",
+        onmousedown: "highlightCard(evt)",
+        onmouseenter: "highlightCard(evt)",
+        onmouseleave: "removeCardHl(evt)",
+        onmouseup: "removeCardHl(evt)",
+        stroke: "rgba(0, 0, 0, 0)"
+    };
+    for(var i = 0; i < cards.cards.length; i++) {
+        cards.cards[i].rotation = (-0.5 + (i / (cards.cards.length - 1))) * cards.spreadAngle;
+    }
 }
 
 function getPolygonDimensions(vertices) {

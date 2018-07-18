@@ -1,0 +1,65 @@
+.menu_overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 100%;
+    margin: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+.user_menu_container {
+    /*background-color: rgba(0, 0, 0, 0.5);*/
+    background-color: rgba(0, 0, 0, 0.0);
+    height: 80%;
+    left: 37.5%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-top: 5vh;
+    position: absolute;
+    top: 10%;
+    width: 25%;
+}
+.user_menu_container ul {
+    align-content: center;
+    background-color: rgba(0, 0, 0, 0.25);
+    border: 2px black solid;
+    list-style: none;
+    margin: 0 auto;
+    position: relative;
+    padding: 2% 0 2% 0;
+    text-align: center;
+    vertical-align: middle;
+    width: 75%;
+}
+.user_menu_container ul li {
+    -webkit-transition-duration: 0.4s; /* Safari */
+    color: black;
+    margin: 0;
+    padding: 0;
+    transition-duration: 0.4s;
+}
+.user_menu_input {
+    -webkit-transition-duration: 0.4s; /* Safari */
+    background-color: white;
+    border: 1px grey solid;
+    border-radius: 0;
+    color: grey;
+    margin: 0;
+    padding: 0;
+    transition-duration: 0.4s;
+    width: 75%;
+}
+.user_menu_input:hover {
+    background-color: grey;
+    color: white;
+}
+.user_menu_btn {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 2px 7px;
+    width: 50%;
+}
+.welcome_msg {
+    font-size: large;
+    font-weight: bold;
+}

@@ -4,15 +4,33 @@ Required fields and validators as well as messages are defined for each form.
 The names and purposes of the forms can be derived and are self-explanatory.
 '''
 
-from flask_wtf.html5 import EmailField
-from wtforms import validators, SubmitField, TextField, PasswordField, \
-    SelectField, Form
-from flask_wtf.file import FileField
-from flask import request, flash, session
+from wtforms import validators, SubmitField, TextField, PasswordField, Form
 from app import app, db
 from app.models.User import User
-from time import time
 import string
+
+
+class LoginForm(Form):
+    username = TextField('Username', [validators.Required(
+        'Please enter your username')])
+    password = PasswordField('Password', [validators.Required(
+        'Please enter your password')])
+    submit = SubmitField('Log in')
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+
+    def validate(self):
+        if not Form.validate(self):
+            return None
+        user = User.query.filter_by(username=self.username.data).first()
+        if not user:
+            self.username.errors.append('User doesn\'t exist')
+            return None
+        if not user.check_password(self.password.data):
+            self.password.errors.append('Incorrect password')
+            return None
+        return user
 
 
 class RegisterForm(Form):

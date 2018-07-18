@@ -31,16 +31,26 @@ function getAngleToRotate(pointA, pointB) {
 
 
 function drawFields(svg) {
-    var cp, dims, field, g, img, path;
+    var dims, field, img, fieldBorderSettings, fieldGroupSettings;
 
     for(var i = 0; i < board.fields.length; i++) {
         field = board.fields[i];
         dims = getPolygonDimensions(board.hexagonVertices);
         
-        field.svgGroup = svg.group("field_" + field.id, {transform: "translate(" + field.center[0] + ", " + field.center[1] + ") rotate(" + field.imgRot + ")"});
-        img = svg.image(field.svgGroup, dims.left, dims.top, dims.width, dims.height, field.imgSrc);
-        svg.title(img, "Field " + field.id);
-        svg.polygon(field.svgGroup, board.hexagonVertices, {fill: "none", stroke: field.bordercolor, strokeWidth: 5});
+        fieldGroupSettings = $.extend({}, board.fieldGroupSettings);
+        fieldGroupSettings.transform = "translate(" + field.center[0] + ", " + field.center[1] + ") rotate(" + field.imgRot + ")";
+        field.svgGroup = svg.group("field_" + field.id, fieldGroupSettings);
+        fieldBorderSettings = $.extend({}, board.hexagonSettings);
+        fieldBorderSettings.id = "field_" + field.id + "_border";
+        if(field.type || (!board.init)) {
+            img = svg.image(field.svgGroup, dims.left, dims.top, dims.width, dims.height, field.imgSrc);
+            svg.title(img, "Field " + field.id);
+        }
+        svg.polygon(field.svgGroup, board.hexagonVertices, fieldBorderSettings);
+        if(field.number) {
+            svg.circle(field.svgGroup, 0, 0, board.numberCircleRadius, {fill: board.fieldBorderColor});
+            svg.text(field.svgGroup, field.numberOffsetX, field.numberOffsetY, field.number + "", field.numberSettings);
+        }
     }
 }
 
@@ -86,6 +96,7 @@ function drawCities(svg) {
     }
 }
 
+// Draws a city or a settlement
 function drawHelper(svg, vertices, entity, idPrefix) {
     var absLoc, field, relLoc, settings;
 
@@ -106,26 +117,6 @@ function drawHelper(svg, vertices, entity, idPrefix) {
         settings.strokeWidth = 1;
     }
     svg.polygon(vertices, settings);
-}
-
-// Functions for changing a clickbox's appearance when hovering over them
-function highlightCb(evt) {
-    console.log("highlightCb called for " + evt.target.id);
-    var cb = evt.target;
-
-    cb.setAttribute("x", cb.widthHl / -2);
-    cb.setAttribute("width", cb.widthHl);
-    cb.setAttribute("y", cb.heightHl / -2);
-    cb.setAttribute("height", cb.heightHl);
-}
-function removeCbHighlight(evt) {
-    console.log("removeCbHighlight called for " + evt.target.id);
-    var cb = evt.target;
-
-    cb.setAttribute("x", cb.widthDefault / -2);
-    cb.setAttribute("width", cb.widthDefault);
-    cb.setAttribute("y", cb.heightDefault / -2);
-    cb.setAttribute("height", cb.heightDefault);
 }
 
 function drawRoadClickboxes(svg) {
@@ -187,15 +178,15 @@ function drawCrossingClickboxes(svg) {
 
 // Start clickbox animations
 function animateClickboxes() {
-    $(".clickbox").animate({svgStrokeDashOffset: board.cbAnimProgress}, 1000, "linear", animateRoadCBLoop);
+    $(".clickbox").animate({svgStrokeDashOffset: board.cbAnimProgress}, 1000, "linear", animateCBLoop);
 }
 
 // Function that gets called recursively to animate the clickboxes
-function animateRoadCBLoop() {
+function animateCBLoop() {
     // The stuff below should only happen once, so make sure only the 'first' road clickbox executes it
     if(this == $(".clickbox")[0]) {
         board.cbAnimProgress += board.cbAnimStep;
-        $(".clickbox").animate({svgStrokeDashOffset: board.cbAnimProgress}, 1000, 'linear', animateRoadCBLoop);
+        $(".clickbox").animate({svgStrokeDashOffset: board.cbAnimProgress}, 1000, 'linear', animateCBLoop);
     }
 }
 

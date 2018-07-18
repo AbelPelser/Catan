@@ -1,32 +1,12 @@
-{% extends "layout.html" %}
+{% extends "central_menu.html" %}
 {% block title %}Index{% endblock %}
 
-
-{% block body %}
-<body>
-    {%- with messages = get_flashed_messages(with_categories=True) -%}
-    {%- if messages -%}
-    <div align="center">
-        {% for category, message in messages -%}
-        {%- if category == 'warning' -%}
-        {%- set class='warning' -%}
-        {%- elif category == 'error' -%}
-        {%- set class='danger' -%}
-        {%- else -%}
-        {%- set class='info' -%}
-        {%- endif -%}
-        <div class="alert alert-{{ class }}" style="margin: 0;">{{ message }}</div>
-        {% endfor -%}
-    </div>
-    {%- endif -%}
-    {%- endwith -%}
-
-    {#
-    {% if current_user.is_authenticated %}
-    <p>1</p>p>
-    {% else %}
-    <p>2</p>
-    {% endif %}
-    #}
-</body>
+{% block contents %}
+{% if current_user.is_authenticated %}
+<li><span class="welcome_msg">Welcome, {{ current_user.username }}</span></li>
+<li><button class="user_menu_input user_menu_btn" onclick="location.href='/user/logout/';">Log off</button></li>
+{% else %}
+<li><button class="user_menu_input user_menu_btn" onclick="location.href='/user/login/';">Log in</button></li>
+<li><button class="user_menu_input user_menu_btn" onclick="location.href='/user/register/';">Register</button></li>
+{% endif %}
 {% endblock %}

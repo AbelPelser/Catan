@@ -18,13 +18,15 @@
 	</div>
 	{%- endif -%}
 	{%- endwith -%}
+	<div class="menu_overlay">
+		<div class="user_menu_container">
+			<ul>
+			{% block contents %}
+			{% endblock %}
+			</ul>
+		</div>
+	</div>
 </body>
 {% endblock %}
 {% block javascript %}
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
-<script type="text/javascript" defer="true">
-//$(document).ready(function() {
-	//$("#menu_list").width($(".user_menu_input").first().width() * 1.5);
-//});
-</script>
 {% endblock %}

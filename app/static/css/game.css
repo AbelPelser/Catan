@@ -1,0 +1,194 @@
+#boardSvg {
+    height: 100vh;
+    width: 140vh;
+}
+
+#cardSvg, #upperGameplaySvg {
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+}
+
+.page {
+    height: 100vh;
+    left: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    width: 150vh;
+}
+
+.pageListItem {
+    display: inline;
+    float: left;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+.board {
+    height: 100vh;
+    width: 100vh;
+}
+
+.chat {
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 2px orange solid;
+    color: orange;
+    height: 250px;
+    left: 300px;
+    top: 300px;
+    vertical-align: bottom;
+    width: 250px;
+    word-wrap: break-word;
+    z-index: 2000;
+}
+#chatInput {
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 0;
+    height: 20px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.chatInput {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 20px;
+    position: absolute;
+    top: calc(100% - 20px);
+    width: 100%;
+}
+.chatOutput {
+    height: calc(100% - 20px);
+    overflow-x: hidden;
+    overflow-y: scroll;
+    position: absolute;
+    width: 100%;
+}
+.chatMsg {
+    margin: 0;
+    padding: 0;
+}
+.fieldSetup {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 250px;
+    left: 0;
+    top: 0;
+    width: 250px;
+    z-index: 1000;
+}
+.fieldSetup p {
+    background-color: rgba(255, 255, 255, 0.75);
+    text-align: center;
+    width: 100%;
+}
+.fieldSetup div {
+    width: 100%;
+}
+.fieldSetup div img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+
+
+
+
+/* Left menu */
+
+.leftMenu {
+    /*background-color: white;*/
+    height: 100%;
+    list-style: none;
+    width: 50vh;
+}
+
+#welcome, #points {
+    /*font-size: 25px;*/
+}
+
+.infoLi {
+    height: 20vh;
+    width: 100%;
+}
+
+.infoTable {
+    background-color: yellow;
+    display: table;
+    height: 20vh;
+    width: 100%;
+}
+
+.infoTable div {
+    display: table-row;
+}
+
+.infoTable div div {
+    display: table-cell;
+    padding-bottom: 1%;
+    padding-left: 10%;
+    padding-top: 1%;
+}
+
+.playerCell {
+    background-color: aquamarine;
+    text-indent: 10%;
+    width: 60%;
+}
+
+.tradeCell {
+    background-color: lightgreen;
+    text-align: right;
+    width: 40%;
+}
+
+.tradeBtn {
+    border: 0;
+    background-color: blue;
+}
+
+.tradeBtn:hover {
+    background-color: red;
+}
+
+.tradeBtn:active {
+    background-color: yellow;
+}
+
+.tradeBtn:disabled {
+    background-color: #808080;
+    color: black;
+}
+
+.cardLi {
+    /*background-color: #fefefe;*/
+    height: 39vh;
+    width: 100%;
+}
+
+.tradeInfoLi {
+    height: 2vh;
+    width: 100%;
+}
+
+#tradeInfo {
+    /*background-color: white;*/
+    float: left;
+    text-align: center;
+    width: 75%;
+}
+
+#tradeAccept {
+    /*background-color: pink;*/
+    float: left;
+    text-align: center;
+    width: 25%;
+}
+
+#tradeAcceptBtn {
+
+}

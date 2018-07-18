@@ -1,0 +1,16 @@
+{% extends "central_menu.html" %}
+{% block title %}Log in{% endblock %}
+{% block contents %}
+	{%- for error_producer in [form.username.errors, form.password.errors] -%}
+		{%- for message in error_producer -%}
+		<li><span style="color: red;">{{ message }}</span></li>
+		{%- endfor -%}
+	{%- endfor -%}
+	<form action="/login/" method="post">
+		<li>{{ form.username.label }}</li>
+		<li>{{ form.username (class='user_menu_input') }}</li>
+		<li>{{ form.password.label }}</li>
+		<li>{{ form.password (class='user_menu_input') }}</li>
+		<li>{{ form.submit (class='user_menu_input user_menu_btn') }}</li>
+	</form>
+{% endblock %}

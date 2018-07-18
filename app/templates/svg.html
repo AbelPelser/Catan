@@ -4,197 +4,128 @@
 
 {% block body %}
 <body>
-    <ul class="page">
-        <li class="leftMenu pageListItem">
-            <ul class="leftMenu">
-                <li class="infoLi">
-                    <div class="infoTable">
-                        <div>
-                            <div id="welcome">Welcome, player</div>
-                        </div>
-                        <div>
-                            <div id="points">x/10 points</div>
-                        </div>
-                        <div>
-                            <div id="purchaseCell">
-                                <select id="purchaseOpts"></select>
+    <div id="chat" class="chat" style="display: none">
+        <div id="chatOutput" class="chatOutput"></div>
+        <div class="chatInput">
+            <form id="chatForm" action="javascript:;" onsubmit="sendChat()">
+                <input id="chatInput" type="text" autocomplete="off">
+            </form>
+        </div>
+    </div>
+    <!-- <div id="fieldSetup" class="fieldSetup">
+        <p id="fieldIdP"><b>Field</b></p>
+        <div>
+            <img src="/static/images/png/AKKER.png">
+        </div>
+        <form id="fieldSetupForm" action="javascript:;" onsubmit="setupField()">
+            <select id="fieldType"></select>
+            <select id="fieldNumber"></select>
+            <input id="fieldId" type="hidden" value="">
+            <input type="submit" value="Confirm">
+        </form>
+    </div> -->
+    <!-- <div> -->
+        <ul class="page">
+            <li class="leftMenu pageListItem">
+                <ul class="leftMenu">
+                    <li class="infoLi">
+                        <div class="infoTable">
+                            <div>
+                                <div id="welcome">Welcome, player</div>
                             </div>
-                            <div id="purchaseConfirmCell"><button id="purchaseConfirmBtn" class="tradeBtn">Purchase</button></div>
+                            <div>
+                                <div id="points">x/10 points</div>
+                            </div>
+                            <div>
+                                <div id="purchaseCell">
+                                    <select id="purchaseOpts"></select>
+                                </div>
+                                <div id="purchaseConfirmCell"><button id="purchaseConfirmBtn" class="tradeBtn">Purchase</button></div>
+                            </div>
+                            <div>
+                                <div><button class="chatBtn">chat</button></div>
+                            </div>
+                            <!-- <div>
+                                <div id="player2" class="playerCell">Player 2</div>
+                                <div class="tradeCell"><button id="trade2" class="tradeBtn">Trade</button></div>
+                            </div>
+                            <div>
+                                <div id="player3" class="playerCell">Player 3</div>
+                                <div class="tradeCell"><button id="trade3" class="tradeBtn">Trade</button></div>
+                            </div>
+                            <div>
+                                <div id="player4" class="playerCell">Player 4</div>
+                                <div class="tradeCell"><button id="trade4" class="tradeBtn">Trade</button></div>
+                            </div> -->
                         </div>
-                        <!-- <div>
-                            <div id="player1" class="playerCell">Player 1</div>
-                            <div class="tradeCell"><button id="trade1" class="tradeBtn">Trade</button></div>
-                        </div>
-                        <div>
-                            <div id="player2" class="playerCell">Player 2</div>
-                            <div class="tradeCell"><button id="trade2" class="tradeBtn">Trade</button></div>
-                        </div>
-                        <div>
-                            <div id="player3" class="playerCell">Player 3</div>
-                            <div class="tradeCell"><button id="trade3" class="tradeBtn">Trade</button></div>
-                        </div>
-                        <div>
-                            <div id="player4" class="playerCell">Player 4</div>
-                            <div class="tradeCell"><button id="trade4" class="tradeBtn">Trade</button></div>
-                        </div> -->
-                    </div>
-                </li>
-                <li class="cardLi">
-                    <svg id="tradeCardSvg"></svg>
-                </li>
-                <li class="tradeInfoLi">
-                    <div id="tradeInfo">&nbsp;</div>
-                    <div id="tradeAccept"><button id="tradeAcceptBtn" class="tradeBtn" disabled="disabled">Accept</button></div>
-                </li>
-                <li class="cardLi">
-                    <svg id="cardSvg"></svg>
-                </li>
-            </ul>
-        </li>
-        <li class="board pageListItem">
-            <svg id="boardSvg"></svg>
-        </li>
-        <li class="rightMenu pageListItem">
-            Stuffsies
-        </li>
-    </ul>
+                    </li>
+                    <li class="cardLi">
+                        <svg id="upperGameplaySvg"></svg>
+                    </li>
+                    <li class="tradeInfoLi">
+                        <div id="tradeInfo">&nbsp;</div>
+                        <div id="tradeAccept"><button id="tradeAcceptBtn" class="tradeBtn" style="display:none">Accept</button></div>
+                    </li>
+                    <li class="cardLi">
+                        <svg id="cardSvg"></svg>
+                    </li>
+                </ul>
+            </li>
+            <li class="board pageListItem">
+                <svg id="boardSvg"></svg>
+            </li>
+            <!-- <li class="rightMenu pageListItem">
+                Stuffsies
+            </li> -->
+        </ul>
+    <!-- </div> -->
 </body>
 {% endblock %}
 
 {% block javascript %}
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="/static/js/functions.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="/static/js/testboards.js"></script>
+<script src="/static/js/initFunctions.js"></script>
+<script src="/static/js/chatFunctions.js"></script>
+<script src="/static/js/miscFunctions.js"></script>
 <script src="/static/js/boardSvgDrawFunctions.js"></script>
-<script src="/static/js/cardSvgDrawFunctions.js"></script>
+<script src="/static/js/otherSvgDrawFunctions.js"></script>
+<!-- {- if ...} -->
+<!-- <script src="/static/js/boardSetupFunctions.js"></script> -->
 <script src="/static/js/jquery.svg.package-1.5.0/jquery.svg.js"></script>
 <script src="/static/js/jquery.svg.package-1.5.0/jquery.svganim.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script type="text/javascript" defer="true">
 $(document).ready(function() {
-    // Global variables
-    board = {
-        fields: [
-            {id: 0, col: 2, row: 1, imgSrc: "/static/images/png/AKKER.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 1, col: 3, row: 1, imgSrc: "/static/images/png/BERGEN.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 2, col: 4, row: 1, imgSrc: "/static/images/png/BOS.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 3, col: 2, row: 2, imgSrc: "/static/images/png/HEUVEL.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 4, col: 3, row: 2, imgSrc: "/static/images/png/WEIDE.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 5, col: 4, row: 2, imgSrc: "/static/images/png/AKKER.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 6, col: 5, row: 2, imgSrc: "/static/images/png/WEIDE.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 7, col: 1, row: 3, imgSrc: "/static/images/png/BOS.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 8, col: 2, row: 3, imgSrc: "/static/images/png/HEUVEL.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 9, col: 3, row: 3, imgSrc: "/static/images/png/HAVEN.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 10, col: 4, row: 3, imgSrc: "/static/images/png/AKKER.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 11, col: 5, row: 3, imgSrc: "/static/images/png/WEIDE.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 12, col: 2, row: 4, imgSrc: "/static/images/png/BOS.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 13, col: 3, row: 4, imgSrc: "/static/images/png/HEUVEL.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 14, col: 4, row: 4, imgSrc: "/static/images/png/BERGEN.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 15, col: 5, row: 4, imgSrc: "/static/images/png/AKKER.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 16, col: 2, row: 5, imgSrc: "/static/images/png/BOS.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 17, col: 3, row: 5, imgSrc: "/static/images/png/WEIDE.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 18, col: 4, row: 5, imgSrc: "/static/images/png/BERGEN.png", imgRot: 0, bordercolor: "#f4deb5"},
+    var socket = io.connect();
 
-            {id: 19, col: 2, row: 0, imgSrc: "/static/images/png/WATER.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 20, col: 3, row: 0, imgSrc: "/static/images/png/WATER.png", imgRot: 60, bordercolor: "#f4deb5"},
-            {id: 21, col: 4, row: 0, imgSrc: "/static/images/png/WATER.png", imgRot: 60, bordercolor: "#f4deb5"},
-            {id: 22, col: 5, row: 0, imgSrc: "/static/images/png/WATER.png", imgRot: 60, bordercolor: "#f4deb5"},
-            {id: 23, col: 1, row: 1, imgSrc: "/static/images/png/WATER.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 24, col: 5, row: 1, imgSrc: "/static/images/png/WATER.png", imgRot: 120, bordercolor: "#f4deb5"},
-            {id: 25, col: 1, row: 2, imgSrc: "/static/images/png/WATER.png", imgRot: 0, bordercolor: "#f4deb5"},
-            {id: 26, col: 6, row: 2, imgSrc: "/static/images/png/WATER.png", imgRot: 120, bordercolor: "#f4deb5"},
-            {id: 27, col: 0, row: 3, imgSrc: "/static/images/png/WATER.png", imgRot: -60, bordercolor: "#f4deb5"},
-            {id: 28, col: 6, row: 3, imgSrc: "/static/images/png/WATER.png", imgRot: 120, bordercolor: "#f4deb5"},
-            {id: 29, col: 1, row: 4, imgSrc: "/static/images/png/WATER.png", imgRot: -60, bordercolor: "#f4deb5"},
-            {id: 30, col: 6, row: 4, imgSrc: "/static/images/png/WATER.png", imgRot: 180, bordercolor: "#f4deb5"},
-            {id: 31, col: 1, row: 5, imgSrc: "/static/images/png/WATER.png", imgRot: -60, bordercolor: "#f4deb5"},
-            {id: 32, col: 5, row: 5, imgSrc: "/static/images/png/WATER.png", imgRot: 180, bordercolor: "#f4deb5"},
-            {id: 33, col: 2, row: 6, imgSrc: "/static/images/png/WATER.png", imgRot: -120, bordercolor: "#f4deb5"},
-            {id: 34, col: 3, row: 6, imgSrc: "/static/images/png/WATER.png", imgRot: -120, bordercolor: "#f4deb5"},
-            {id: 35, col: 4, row: 6, imgSrc: "/static/images/png/WATER.png", imgRot: -120, bordercolor: "#f4deb5"},
-            {id: 36, col: 5, row: 6, imgSrc: "/static/images/png/WATER.png", imgRot: 180, bordercolor: "#f4deb5"},
-        ],
-        roads: [
-            {player: "blue", fieldId: 10, side: 0},
-            {player: "blue", fieldId: 10, side: 4},
-            {player: "blue", fieldId: 10, side: 5},
-            {player: "red", fieldId: 15, side: 0},
-            {player: "red", fieldId: 15, side: 1},
-            {player: "red", fieldId: 15, side: 2},
-            {player: "white", fieldId: 12, side: 0},
-            {player: "white", fieldId: 12, side: 1},
-            {player: "orange", fieldId: 18, side: 1},
-            {player: "orange", fieldId: 18, side: 2}
-        ],
-        settlements: [
-            {player: "blue", fieldId: 10, vertex: 0},
-            {player: "red", fieldId: 15, vertex: 2},
-            {player: "white", fieldId: 12, vertex: 0},
-            {player: "orange", fieldId: 18, vertex: 1}
-        ],
-        cities: [
-            {player: "blue", fieldId: 10, vertex: 4},
-            {player: "red", fieldId: 15, vertex: 0},
-            {player: "white", fieldId: 12, vertex: 2},
-            {player: "orange", fieldId: 18, vertex: 3}
-        ],
-        roadClickboxes: [
-            {fieldId: 10, side: 1},
-            {fieldId: 18, side: 3}
-        ],
-        crossingClickboxes: [
-            {fieldId: 2, vertex: 2},
-            {fieldId: 2, vertex: 4},
-            {fieldId: 17, vertex: 0},
-            {fieldId: 8, vertex: 2},
-            {fieldId: 3, vertex: 0},
-            {fieldId: 3, vertex: 2}
-        ],
-        robber: {fieldId: 9, imgSrc: "/static/images/png/robber_m6.png"}
-    };
-    // Local variables
-    var cards = {
-        cards: [{type: "wool", color: "#66ff66"},
-                {type: "wood", color: "#006600"},
-                {type: "wheat", color: "#cccc00"},
-                {type: "stone", color: "#994c00"},
-                {type: "ore", color: "#808080"},
-                {type: "wool", color: "#66ff66"},
-                {type: "wood", color: "#006600"},
-                {type: "wheat", color: "#cccc00"},
-                {type: "stone", color: "#994c00"},
-                {type: "ore", color: "#808080"},
-                {type: "wool", color: "#66ff66"},
-                {type: "wood", color: "#006600"},
-                {type: "wheat", color: "#cccc00"},
-                {type: "stone", color: "#994c00"},
-                {type: "ore", color: "#808080"},
-                {type: "wool", color: "#66ff66"},
-                {type: "wood", color: "#006600"},
-                {type: "wheat", color: "#cccc00"},
-                {type: "stone", color: "#994c00"},
-                {type: "ore", color: "#808080"}]
-    };
-
-    var tradeCards;
-    // Stores whether or not the board svg element has been loaded already
-    var boardSvgLoaded = false, cardSvgLoaded = false, tradeCardSvgLoaded = false;
-    
     // _-*-_ Start of execution _-*-_
     globalInit();
+
+    // Socket handlers
+    socket.on('connect_confirm', function() {
+        showChat("<i>Connected</i>");
+    });
+    socket.on("chat", function(chatData) {
+        chat(chatData);
+    });
+    socket.on("refresh", function() {
+        location.reload();
+    });
     
-    // Attach event handlers
+    // Event handlers
     $(window).resize(function() {
+        dimensionsInit();
         if(boardSvgLoaded) {
-            var radius = parseInt(($("#boardSvg").width() - 10) / Math.sqrt(147));
-            initBoard(radius, 10, 10);
-            $("#boardSvg").empty();
-            drawBoardElements();
+            boardSvgDraw();
         }
         if(cardSvgLoaded) {
-            initCards(cards, $("#cardSvg").width(), $("#cardSvg").height());
-            $("#cardSvg").empty();
-            var cardSvg = $("#cardSvg").svg("get");
-            drawCards(cardSvg, $("#cardSvg").width(), $("#cardSvg").height(), cards, false);
+            cardSvgDraw();
+        }
+        if(upperGameplaySvgLoaded) {
+            upperGameplaySvgDraw();
         }
     });
 
@@ -203,81 +134,205 @@ $(document).ready(function() {
         trade(player_nr);
     });
     $("#tradeAcceptBtn").click(function(evt) {
-        $("#tradeInfo").html("&nbsp;");
-        $("#tradeAcceptBtn").attr("disabled", "disabled");
-        $("#tradeCardSvg").empty();
+        acceptTrade();
     });
     $("#purchaseConfirmBtn").click(function(evt) {
         var toPurchase = $("#purchaseOpts :selected").text(); //.val()
         alert("You wanted to purchase " + toPurchase);
     });
-
-    // Regular functions
-
-    // Global initialization function
-    function globalInit() {
-        var radius = parseInt(($("#boardSvg").width() - 10) / Math.sqrt(147));
-        initBoard(radius, 10, 10);
-        initCards(cards, $("#cardSvg").width(), $("#cardSvg").height());
-        initTestPurchaseOpts();
-        
-        // Initilize SVG elements
-        $("#boardSvg").svg({onLoad: boardSvgInit});
-        $("#cardSvg").svg({onLoad: cardSvgInit});
-        $("#tradeCardSvg").svg({onload: tradeCardSvgInit});
-    }
-
-    function boardSvgInit() {
-        boardSvgLoaded = true;
-        drawBoardElements();
-    }
-
-    function cardSvgInit() {
-        cardSvgLoaded = true;
-        var cardSvg = $("#cardSvg").svg("get");
-        drawCards(cardSvg, $("#cardSvg").width(), $("#cardSvg").height(), cards, false);
-    }
-
-    function tradeCardSvgInit() {
-        tradeCardSvgLoaded = true;
-    }
-
-    function initTestPurchaseOpts() {
-        var testOpts = [
-            {text: "City", value: 1},
-            {text: "Settlement", value: 2},
-            {text: "Road", value: 3},
-            {text: "Development", value: 4}
-        ];
-        for(var i = 0; i < testOpts.length; i++) {
-            $("#purchaseOpts").append($("<option>", testOpts[i]));
+    $(".chatBtn").click(function(evt) {
+        var chatDiv = $("#chat");
+        if(chatDiv.css("display") == "none") {
+            chatDiv.css("display", "");
+        } else {
+            chatDiv.css("display", "none");
         }
-    }
-
-    function drawBoardElements() {
-        var boardSvg = $("#boardSvg").svg("get");
-        drawBoard(boardSvg);
-    }
-
-    function trade(player_nr) {
-        if(!cardSvgLoaded) {
-            return;
-        }
-        // Drawing the cards should happen in response to websocket messages
-        tradeCards = {
-            cards: [{type: "wool", color: "#66ff66"},
-                    {type: "wood", color: "#006600"},
-                    {type: "wheat", color: "#cccc00"}]
-        };
-        var tradeCardSvg = $("#tradeCardSvg").svg("get");
-        initCards(tradeCards, $("#tradeCardSvg").width(), $("#tradeCardSvg").height());
-        $("#tradeInfo").text("Trading with Bartho Krenck");
-        $("#tradeAcceptBtn").removeAttr("disabled");
-        $("#tradeCardSvg").empty();
-        drawTradeScreen(tradeCardSvg, $("#tradeCardSvg").width(), $("#tradeCardSvg").height(), tradeCards);
-    }
+        chatDiv.resizable();
+    });
 });
 
+// Global variables
+board = boards[1];
+// Local variables
+var playerId = 0;
+var cards = {
+    cards: [{type: "wool", color: "#66ff66"},
+            {type: "wood", color: "#006600"},
+            {type: "wheat", color: "#cccc00"},
+            {type: "stone", color: "#994c00"},
+            {type: "ore", color: "#808080"},
+            {type: "wool", color: "#66ff66"},
+            {type: "wood", color: "#006600"},
+            {type: "wheat", color: "#cccc00"},
+            {type: "stone", color: "#994c00"},
+            {type: "ore", color: "#808080"},
+            {type: "wool", color: "#66ff66"},
+            {type: "wood", color: "#006600"},
+            {type: "wheat", color: "#cccc00"},
+            {type: "stone", color: "#994c00"},
+            {type: "ore", color: "#808080"},
+            {type: "wool", color: "#66ff66"},
+            {type: "wood", color: "#006600"},
+            {type: "wheat", color: "#cccc00"},
+            {type: "stone", color: "#994c00"},
+            {type: "ore", color: "#808080"}]
+};
+var tradeCards, inTrade, tradingPartner;
+// Stores whether or not the board svg element has been loaded already
+var boardSvgLoaded = false, cardSvgLoaded = false, upperGameplaySvgLoaded = false;
 
+
+// Regular functions
+
+// Global initialization function
+function globalInit() {
+    dimensionsInit();
+    // Initilize SVG elements
+    $("#boardSvg").svg({onLoad: boardSvgDraw});
+    $("#cardSvg").svg({onLoad: cardSvgDraw});
+    $("#upperGameplaySvg").svg({onLoad: upperGameplaySvgDraw});
+
+    // {- if ...}
+    // $("#fieldSetup").draggable();
+    $("#chat").draggable();
+}
+
+function dimensionsInit() {
+    // Values mostly determined through trial and error
+    // 2 / 7 of the board's width is reserved for the players' cards and pieces
+    var radius = parseInt((5 / 7 * $("#boardSvg").width() - 10) / Math.sqrt(147));
+    // These offsets are designed to center the board exactly
+    var boardX = ($("#boardSvg").width() - (Math.sqrt(147) * radius)) / 2, boardY = ($("#boardSvg").height() - (radius * 11)) / 2;
+
+    initBoard(radius, boardX, boardY);
+    initCards(cards, $("#cardSvg").width(), $("#cardSvg").height());
+    initOwnedCardsAndPieces(board.ownedCardsAndPieces[playerId], $("#upperGameplaySvg").width(), $("#upperGameplaySvg").height(), 10, 10, false);
+    initTestPurchaseOpts();
+}
+
+function boardSvgDraw() {
+    boardSvgLoaded = true;
+    $("#boardSvg").empty();
+    drawBoardElements();
+    drawPlayerCorners();
+}
+
+function cardSvgDraw() {
+    cardSvgLoaded = true;
+    $("#cardSvg").empty();
+    var cardSvg = $("#cardSvg").svg("get");
+    drawCards(cardSvg, $("#cardSvg").width(), $("#cardSvg").height(), cards, false);
+}
+
+function upperGameplaySvgDraw() {
+    upperGameplaySvgLoaded = true;
+    $("#upperGameplaySvg").empty();
+    
+    var upperGameplaySvg = $("#upperGameplaySvg").svg("get");
+    if(inTrade) {
+        $("#tradeInfo").text("Trading with " + tradingPartner);
+        $("#tradeAcceptBtn").css("display", "inline");
+        drawTradeScreen(upperGameplaySvg, $("#upperGameplaySvg").width(), $("#upperGameplaySvg").height(), tradeCards);
+    } else {
+        $("#tradeInfo").html("&nbsp;");
+        $("#tradeAcceptBtn").css("display", "none");
+        var g = upperGameplaySvg.group("ownedCardsAndPieces" + playerId);
+        var ocap = board.ownedCardsAndPieces[playerId];
+        drawOwnedCardsAndPieces(upperGameplaySvg, g, ocap);
+    }
+}
+
+function initTestPurchaseOpts() {
+    var testOpts = [
+        {text: "City", value: 1},
+        {text: "Settlement", value: 2},
+        {text: "Road", value: 3},
+        {text: "Development", value: 4}
+    ];
+    for(var i = 0; i < testOpts.length; i++) {
+        $("#purchaseOpts").append($("<option>", testOpts[i]));
+    }
+}
+
+function drawBoardElements() {
+    var boardSvg = $("#boardSvg").svg("get");
+    drawBoard(boardSvg, playerId);
+}
+
+function drawPlayerCorners() {
+    var boardSvg = $("#boardSvg").svg("get");
+    var boardW = $("#boardSvg").width(), boardH = $("#boardSvg").height();
+    // var cornerData = [{locX: boardW * 0.735, locY: boardH * 0.9, rotation: -60},
+    //                   {locX: boardW * 0.85, locY: boardH * 0.35, rotation: -120},
+    //                   {locX: boardW * 0.26, locY: boardH * 0.1, rotation: 120}]
+    var cornerData = [{locX: boardW * 0.75, locY: boardH * 0.70, rotation: 0},
+                      {locX: boardW * 0.75, locY: boardH * 0.01, rotation: 0},
+                      {locX: boardW * 0.01, locY: boardH * 0.01, rotation: 0}]
+    var cornerGroup, ocap, settings;
+
+    for(var i = 0, j = 0; i < 4, j < 3; i++) {
+        // We don't draw the current player's pieces in a 'corner'; those are drawn in the upperGamePlaySvg
+        if(i == playerId) {
+            continue;
+        }
+        settings = {transform: "translate(" + cornerData[j].locX + ", " + cornerData[j].locY + ") rotate(" + cornerData[j].rotation + ")"};
+        cornerGroup = boardSvg.group("player" + i + "Corner", settings);
+        initOwnedCardsAndPieces(board.ownedCardsAndPieces[i], boardW / 4, boardH / 4, 0, 0, true);
+        drawOwnedCardsAndPieces(boardSvg, cornerGroup, board.ownedCardsAndPieces[i]);
+        j++;
+    }
+}
+
+function sendChat() {
+    // showChat($("#chatInput").val());
+    var msg = $("#chatInput").val();
+    $.ajax({
+        url: "/game/chat/",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        // traditional: true,
+        data: JSON.stringify({'msg': msg}),
+        success: function(result) {
+            $("#chatInput").val("");
+            return;
+        },
+        error: function(obj, type, msg) {
+            handleErr(obj, type, msg);
+        }
+    });
+}
+
+function chat(chatData) {
+    safeChat = handleChatData(chatData.chat_data);
+    showChat(safeChat);
+}
+
+function showChat(msg) {
+    var newChatLine = $('<p class=\"chatMsg\"></p>');
+    newChatLine.append(msg);
+    $("#chatOutput").append(newChatLine);
+    // $("#chatOutput").append("<br />");
+}
+
+function trade(player_nr) {
+    // In reality, displaying this info should happen in response to websocket messages
+    tradeCards = {
+        cards: [{type: "wool", color: "#66ff66"},
+                {type: "wood", color: "#006600"},
+                {type: "wheat", color: "#cccc00"}]
+    };
+    tradingPartner = "Barto Krenck";
+    initCards(tradeCards, $("#upperGameplaySvg").width(), $("#upperGameplaySvg").height());
+    //send trade msg...
+    inTrade = true;
+    upperGameplaySvgDraw();
+}
+
+// In reality, we should do this in response to a websocket update
+function acceptTrade() {
+    inTrade = false;
+    upperGameplaySvgDraw();
+}
 </script>
 {% endblock %}
